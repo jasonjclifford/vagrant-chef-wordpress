@@ -26,17 +26,17 @@ when "centos", "redhat", "suse", "fedora", "scientific", "amazon", "ubuntu","deb
 
   # on apt-based platforms when first provisioning we need to force
   # apt-get update at compiletime if we are going to try to install at compiletime
-  if node['platform_family'] == "debian"
-    execute "apt-get-update-build-essentials" do
-      command "apt-get update"
-      action :nothing
-      # tip: to suppress this running every time, just use the apt cookbook
-      not_if do
-        ::File.exists?('/var/lib/apt/periodic/update-success-stamp') &&
-        ::File.mtime('/var/lib/apt/periodic/update-success-stamp') > Time.now - 86400*2
-      end
-    end.run_action(:run) if compiletime
-  end
+  # if node['platform_family'] == "debian"
+  #   execute "apt-get-update-build-essentials" do
+  #     command "apt-get update"
+  #     action :nothing
+  #     # tip: to suppress this running every time, just use the apt cookbook
+  #     not_if do
+  #       ::File.exists?('/var/lib/apt/periodic/update-success-stamp') &&
+  #       ::File.mtime('/var/lib/apt/periodic/update-success-stamp') > Time.now - 86400*2
+  #     end
+  #   end.run_action(:run) if compiletime
+  # end
 
   packages = case node['platform_family']
     when "debian"
@@ -64,8 +64,8 @@ when "centos", "redhat", "suse", "fedora", "scientific", "amazon", "ubuntu","deb
 when "smartos"
     include_recipe 'pkgin'
     %w{gcc47 gcc47-runtime scmgit-base gmake pkg-config binutils}.each do |package|
-			pkgin_package package do 
-      	action :install 
+			pkgin_package package do
+      	action :install
     	end
 		end
 

@@ -18,7 +18,7 @@ directory "/home/vagrant/bin" do
 end
 
 remote_file "/home/vagrant/bin/vcprompt" do
-  source "https://raw.github.com/djl/vcprompt/master/bin/vcprompt"
+  source "vcprompt"
   action :create_if_missing
   owner "vagrant"
   group "vagrant"
@@ -49,4 +49,3 @@ end
 link "/home/vagrant/blog" do
   to "/var/www/wordpress"
 end
-

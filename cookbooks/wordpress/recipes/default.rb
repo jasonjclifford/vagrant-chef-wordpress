@@ -23,12 +23,20 @@ include_recipe "php"
 include_recipe "php::module_mysql"
 include_recipe "apache2::mod_php5"
 
-# Make sure the mysql gem is installed. This looks like it will change with 
-# the release of 0.10.10 and the inclusion of the new chef_gem. 
+# Make sure the mysql gem is installed. This looks like it will change with
+# the release of 0.10.10 and the inclusion of the new chef_gem.
 # code curtesy @hectcastro
 # http://tickets.opscode.com/browse/COOK-1009
-gem_package "mysql" do
-  action :install
+gem_mysql_path = '/opt/vagrant_ruby/lib/ruby/gems/1.8/cache/mysql-2.9.1.gem'
+if File.exists?(gem_mysql_path)
+  gem_package "mysql" do
+    action :install
+    source gem_mysql_path
+  end
+else
+  gem_package "mysql" do
+    action :install
+  end
 end
 
 if node.has_key?("ec2")
@@ -49,7 +57,7 @@ if node['wordpress']['version'] == 'latest'
   require 'digest/sha1'
   require 'open-uri'
   local_file = "#{Chef::Config[:file_cache_path]}/wordpress-latest.tar.gz"
-  latest_sha1 = open('http://wordpress.org/latest.tar.gz.sha1') {|f| f.read }
+  latest_sha1 = '904487e0d70a2d2b6a018aaf99e21608d8f2db88'
   unless File.exists?(local_file) && ( Digest::SHA1.hexdigest(File.read(local_file)) == latest_sha1 )
     remote_file "#{Chef::Config[:file_cache_path]}/wordpress-latest.tar.gz" do
       source "http://wordpress.org/latest.tar.gz"
